@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+<base target="_top">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao+Looped:wght@600;700&family=Noto+Sans+Lao:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ldb:#2778b9; --ldb-d:#1b5e96; --ldb-l:#e6f0fa; --ldb-ll:#f2f7fc;
+    --navy:#0f2d4a; --navy-2:#173d62;
+    --bg:#eef3f8; --card:#ffffff; --text:#16233a; --muted:#5f6f84; --line:#dde6ef;
+    --ok:#1b9068; --ok-l:#e3f5ee; --warn:#c7770a; --warn-l:#fff3dc; --bad:#cf3f38; --bad-l:#fde9e7;
+    --gift:#c9900f; --gift-d:#a47408; --gift-l:#fff6df;
+    --r-sm:10px; --r:16px; --r-lg:22px;
+    --sh-1:0 1px 2px rgba(15,45,74,.05),0 2px 8px rgba(15,45,74,.05);
+    --sh-2:0 6px 24px rgba(15,45,74,.10);
+    --sh-3:0 24px 60px rgba(15,45,74,.28);
+    --f-body:'Noto Sans Lao','Phetsarath OT',system-ui,sans-serif;
+    --f-head:'Noto Sans Lao Looped','Noto Sans Lao','Phetsarath OT',sans-serif;
+    --ease:cubic-bezier(.2,.8,.2,1);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:var(--f-body);background:var(--bg);color:var(--text);font-size:17px;line-height:1.6;padding-bottom:96px;-webkit-font-smoothing:antialiased}
+  button,input,select,textarea{font:inherit;color:inherit}
+  :focus-visible{outline:3px solid rgba(39,120,185,.45);outline-offset:2px}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 18px}
+  .num-t{font-variant-numeric:tabular-nums}
+
+  /* ---------- header ---------- */
+  header{background:var(--navy);color:#fff;position:sticky;top:0;z-index:30;box-shadow:0 4px 20px rgba(15,45,74,.25);overflow:hidden}
+  header::before{content:"";position:absolute;inset:0;background:
+      radial-gradient(900px 220px at 85% -40%,rgba(39,120,185,.55),transparent 70%),
+      radial-gradient(500px 160px at 5% 120%,rgba(201,144,15,.18),transparent 70%);pointer-events:none}
+  header .wrap{position:relative}
+  .hbar{display:flex;align-items:center;gap:14px;padding:14px 0 10px}
+  .logo{width:46px;height:46px;border-radius:14px;background:linear-gradient(145deg,#fff,#dbe9f6);color:var(--ldb-d);display:grid;place-items:center;font-weight:700;font-size:14px;flex:none;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+  .htitle{flex:1;min-width:0}
+  .htitle b{display:block;font-family:var(--f-head);font-size:21px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.2px}
+  .htitle span{font-size:14px;opacity:.78}
+  .staff-chip{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);color:#fff;border-radius:999px;padding:8px 15px;cursor:pointer;font-size:15px;white-space:nowrap;max-width:190px;overflow:hidden;text-overflow:ellipsis;transition:background .2s}
+  .staff-chip:hover{background:rgba(255,255,255,.2)}
+  nav.tabs{display:flex;gap:6px;padding:4px 0 12px}
+  nav.tabs button{background:transparent;border:0;color:rgba(255,255,255,.72);padding:9px 16px;border-radius:999px;cursor:pointer;font-weight:600;font-size:16px;display:flex;align-items:center;gap:8px;transition:background .2s,color .2s}
+  nav.tabs button:hover{color:#fff;background:rgba(255,255,255,.08)}
+  nav.tabs button.on{color:var(--navy);background:#fff;box-shadow:0 4px 14px rgba(0,0,0,.18)}
+  nav.tabs svg{width:20px;height:20px}
+  @media (max-width:760px){
+    body{font-size:16.5px}
+    .hbar{padding:12px 0}
+    .htitle b{font-size:18px} .htitle span{font-size:12.5px}
+    .logo{width:40px;height:40px;border-radius:12px;font-size:12.5px}
+    .htitle span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .staff-chip{font-size:14px;padding:7px 11px;max-width:108px}
+    #syncBtn .t{display:none}
+    .itembox{flex-wrap:wrap}
+    nav.tabs{position:fixed;bottom:12px;left:10px;right:10px;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:22px;justify-content:space-around;padding:6px;box-shadow:var(--sh-3);z-index:40}
+    nav.tabs button{flex-direction:column;gap:2px;color:var(--muted);font-size:12px;padding:7px 2px;border-radius:16px;flex:1}
+    nav.tabs button.on{color:#fff;background:var(--ldb);box-shadow:0 6px 14px rgba(39,120,185,.35)}
+    nav.tabs svg{width:23px;height:23px}
+  }
+
+  /* ---------- layout ---------- */
+  main{padding:28px 0 36px}
+  .view{display:none}
+  .view.on{display:block;animation:rise .35s var(--ease)}
+  @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  h2{font-family:var(--f-head);font-size:26px;font-weight:700;margin:0 0 2px;color:var(--navy)}
+  .sub{color:var(--muted);font-size:15.5px;margin:0 0 18px}
+  .card{background:var(--card);border-radius:var(--r-lg);box-shadow:var(--sh-1);padding:20px;margin-bottom:18px;border:1px solid var(--line)}
+  .card h3{font-family:var(--f-head);font-size:19px;font-weight:700;margin:0 0 14px;display:flex;align-items:center;gap:10px;color:var(--navy)}
+  .card h3 .ic{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:var(--ldb-l);font-size:17px;flex:none}
+  .grid{display:grid;gap:14px}
+  .grid>*{min-width:0}
+  .catcard .pill{white-space:normal}
+  .g4{grid-template-columns:repeat(4,1fr)} .g2{grid-template-columns:1fr 1fr} .g3{grid-template-columns:repeat(3,1fr)}
+  @media (max-width:900px){.g4{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr}}
+  @media (max-width:560px){.hide-m{display:none}.g2,.g3{grid-template-columns:1fr}.card{padding:16px;border-radius:18px}h2{font-size:23px}}
+
+  /* ---------- stats ---------- */
+  .stat{position:relative;border-radius:var(--r-lg);padding:18px 18px 16px;background:#fff;border:1px solid var(--line);box-shadow:var(--sh-1);overflow:hidden;transition:transform .2s var(--ease),box-shadow .2s}
+  .stat::after{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--acc,var(--ldb))}
+  .stat .l{font-size:15px;color:var(--muted);font-weight:500}
+  .stat .v{font-size:34px;font-weight:700;line-height:1.15;color:var(--acc,var(--ldb));font-variant-numeric:tabular-nums;margin:4px 0 2px}
+  .stat .s{font-size:14px;color:var(--muted)}
+  .stat .ico{position:absolute;right:14px;top:14px;width:42px;height:42px;border-radius:13px;display:grid;place-items:center;font-size:20px;background:var(--acc-l,var(--ldb-l))}
+  .stat.blue{--acc:var(--ldb);--acc-l:var(--ldb-l)} .stat.warn{--acc:var(--warn);--acc-l:var(--warn-l)} .stat.bad{--acc:var(--bad);--acc-l:var(--bad-l)} .stat.gift{--acc:var(--gift);--acc-l:var(--gift-l)} .stat.plain{--acc:var(--navy-2);--acc-l:#e9eef4}
+  .stat.click{cursor:pointer} .stat.click:hover{transform:translateY(-3px);box-shadow:var(--sh-2)}
+  @media (max-width:560px){.stat .v{font-size:28px}.stat .ico{width:36px;height:36px;font-size:17px}}
+
+  .catcard{border-radius:var(--r);padding:15px 16px;border:1px solid var(--line);background:linear-gradient(180deg,#fff,var(--ldb-ll))}
+  .catcard b{display:block;font-size:17px;font-family:var(--f-head);color:var(--navy)}
+  .catcard .n{font-size:15px;color:var(--muted);margin:2px 0 8px}
+
+  /* ---------- signature: stock level bar ---------- */
+  .lvl{display:flex;align-items:center;gap:10px;min-width:120px}
+  .lvl .bar{flex:1;height:8px;border-radius:99px;background:#e8eef4;overflow:hidden;min-width:60px}
+  .lvl .bar i{display:block;height:100%;border-radius:99px;background:var(--ok);transition:width .6s var(--ease)}
+  .lvl.low .bar i{background:var(--warn)} .lvl.out .bar i{background:var(--bad)}
+  .lvl b{font-variant-numeric:tabular-nums;min-width:34px;text-align:right}
+
+  .pill{display:inline-flex;align-items:center;gap:5px;padding:3px 11px;border-radius:999px;font-size:13.5px;font-weight:600;white-space:nowrap}
+  .pill::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.8}
+  .p-ok{background:var(--ok-l);color:var(--ok)} .p-low{background:var(--warn-l);color:var(--warn)} .p-out{background:var(--bad-l);color:var(--bad)}
+  .p-in{background:var(--ok-l);color:var(--ok)} .p-outx{background:var(--bad-l);color:var(--bad)} .p-gift{background:var(--gift-l);color:var(--gift-d)} .p-adj{background:var(--ldb-l);color:var(--ldb-d)} .p-cancel,.p-stop{background:#edf0f4;color:#56606d}
+
+  /* ---------- forms ---------- */
+  label.f{display:block;margin-bottom:14px}
+  label.f>span{display:block;font-size:15px;color:var(--muted);margin-bottom:6px;font-weight:600}
+  label.f>span i{color:var(--bad);font-style:normal}
+  input[type=text],input[type=number],input[type=date],input[type=tel],select,textarea{width:100%;border:1.5px solid #cfdae6;border-radius:12px;padding:12px 14px;background:#fbfdff;outline:none;font-size:17px;transition:border .15s,box-shadow .15s,background .15s}
+  input:hover,select:hover,textarea:hover{border-color:#b3c5d8}
+  input:focus,select:focus,textarea:focus{border-color:var(--ldb);background:#fff;box-shadow:0 0 0 4px rgba(39,120,185,.14)}
+  textarea{min-height:72px;resize:vertical}
+  .btn{border:0;border-radius:12px;padding:12px 20px;font-weight:600;font-size:16.5px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;justify-content:center;transition:transform .12s,box-shadow .2s,filter .2s}
+  .btn:hover{filter:brightness(1.06)}
+  .btn:active{transform:scale(.97)}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .b-pri{background:var(--ldb);color:#fff;box-shadow:0 6px 16px rgba(39,120,185,.28)}
+  .b-ok{background:var(--ok);color:#fff;box-shadow:0 6px 16px rgba(27,144,104,.26)}
+  .b-bad{background:var(--bad);color:#fff;box-shadow:0 6px 16px rgba(207,63,56,.24)}
+  .b-gift{background:linear-gradient(135deg,#d9a21b,var(--gift-d));color:#fff;box-shadow:0 6px 16px rgba(201,144,15,.3)}
+  .b-gh{background:#fff;border:1.5px solid #cfdae6;color:var(--text)} .b-gh:hover{border-color:var(--ldb);color:var(--ldb)}
+  .b-sm{padding:7px 13px;font-size:14.5px;border-radius:10px;box-shadow:none}
+  .b-block{width:100%;padding:15px;font-size:17.5px}
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .sp{flex:1}
+  .seg{display:inline-flex;background:#dfe8f1;border-radius:14px;padding:5px;gap:4px;margin-bottom:18px;flex-wrap:wrap}
+  .seg button{border:0;background:none;padding:10px 18px;border-radius:10px;cursor:pointer;font-weight:600;font-size:16px;color:var(--muted);transition:all .2s}
+  .seg button.on{background:#fff;color:var(--ldb);box-shadow:0 2px 8px rgba(15,45,74,.12)}
+  .seg.in button.on{color:var(--ok)} .seg.out button.on{color:var(--bad)}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+  .chip{border:1.5px solid #cfdae6;background:#fff;border-radius:999px;padding:6px 15px;font-size:15px;cursor:pointer;transition:all .15s}
+  .chip:hover{border-color:var(--ldb)}
+  .chip.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+  .radios{display:flex;gap:10px;flex-wrap:wrap}
+  .radios label{flex:1;min-width:130px;border:1.5px solid #cfdae6;border-radius:12px;padding:12px;text-align:center;cursor:pointer;font-weight:600;font-size:16px;background:#fff;transition:all .15s}
+  .radios label:hover{border-color:var(--gift)}
+  .radios input{display:none}
+  .radios label.on{border-color:var(--gift);background:var(--gift-l);color:var(--gift-d);box-shadow:0 0 0 3px rgba(201,144,15,.15)}
+
+  .itembox{background:linear-gradient(135deg,var(--ldb-l),#f7fbff);border:1px solid #cfe1f2;border-radius:var(--r);padding:14px 16px;margin-bottom:14px;display:flex;gap:14px;align-items:center}
+  .itembox .big{font-size:32px;font-weight:700;color:var(--ldb);font-variant-numeric:tabular-nums;line-height:1.1}
+
+  /* ---------- tables ---------- */
+  .tbl-wrap{overflow-x:auto;border-radius:var(--r);border:1px solid var(--line)}
+  table{width:100%;border-collapse:collapse;font-size:16px;background:#fff}
+  th{background:#f3f7fb;text-align:left;font-weight:600;color:#44546a;padding:12px;border-bottom:1px solid var(--line);white-space:nowrap;font-size:14.5px}
+  td{padding:11px 12px;border-bottom:1px solid #eef2f6;vertical-align:middle}
+  tr:last-child td{border-bottom:0}
+  tbody tr{transition:background .15s}
+  tbody tr.click{cursor:pointer} tbody tr.click:hover{background:#f5f9fe}
+  tr.grp td{background:#f7fafd;font-weight:700;color:var(--ldb-d);font-family:var(--f-head);font-size:16px}
+  td.num,th.num{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+  td.c,th.c{text-align:center}
+  .muted{color:var(--muted)} .small{font-size:14px}
+  .empty{padding:32px 20px;text-align:center;color:var(--muted);font-size:16px}
+  .empty .e-ic{font-size:34px;display:block;margin-bottom:6px}
+  .mono{font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace;font-size:14.5px;letter-spacing:.2px}
+
+  /* ---------- gift tiles ---------- */
+  .tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:12px}
+  .tile{position:relative;border:1.5px solid var(--line);border-radius:var(--r);padding:13px 14px;background:#fff;display:flex;flex-direction:column;gap:6px;transition:all .2s var(--ease)}
+  .tile:hover{border-color:#e6c46e;transform:translateY(-2px);box-shadow:var(--sh-2)}
+  .tile.sel{border-color:var(--gift);background:var(--gift-l);box-shadow:0 0 0 3px rgba(201,144,15,.16)}
+  .tile.sel::after{content:"✓";position:absolute;top:-9px;right:-9px;width:26px;height:26px;border-radius:50%;background:var(--gift);color:#fff;display:grid;place-items:center;font-size:14px;font-weight:700;box-shadow:0 3px 8px rgba(0,0,0,.2)}
+  .tile.dis{opacity:.5}
+  .tile b{font-size:16px;line-height:1.4}
+  .tile .meta{font-size:14px;color:var(--muted)}
+  .stepper{display:flex;align-items:center;gap:6px;margin-top:auto}
+  .stepper button{width:38px;height:38px;border-radius:11px;border:1.5px solid #cfdae6;background:#fff;font-size:20px;cursor:pointer;line-height:1;transition:all .15s}
+  .stepper button:hover:not(:disabled){border-color:var(--gift);color:var(--gift-d)}
+  .stepper input{width:60px;text-align:center;padding:7px;font-weight:700}
+  .warnbox,.infobox,.okbox{border-radius:12px;padding:12px 14px;font-size:15.5px;margin-bottom:14px;display:flex;gap:10px;align-items:flex-start}
+  .warnbox{background:var(--warn-l);border:1px solid #f1d193;color:#7f4b00}
+  .infobox{background:var(--ldb-l);border:1px solid #c5dbef;color:#174b77}
+  .okbox{background:var(--ok-l);border:1px solid #b3e0cc;color:#11613f}
+
+  /* ---------- modal (bottom sheet on phone) ---------- */
+  .modal-bg{position:fixed;inset:0;background:rgba(10,28,48,.5);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);display:none;align-items:flex-start;justify-content:center;z-index:50;padding:48px 14px;overflow:auto}
+  .modal-bg.on{display:flex;animation:fadeIn .2s}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  .modal{background:#fff;border-radius:var(--r-lg);max-width:580px;width:100%;box-shadow:var(--sh-3);animation:pop .28s var(--ease)}
+  @keyframes pop{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
+  .modal.wide{max-width:800px}
+  .mh{padding:18px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
+  .mh b{flex:1;font-size:19px;font-family:var(--f-head);color:var(--navy)}
+  .mh .x{border:0;background:#f0f4f8;width:36px;height:36px;border-radius:50%;font-size:20px;cursor:pointer;color:var(--muted);line-height:1;transition:background .15s}
+  .mh .x:hover{background:#e3eaf1}
+  .mb{padding:20px 22px}
+  .mf{padding:14px 22px 18px;border-top:1px solid var(--line);display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+  @media (max-width:560px){
+    .modal-bg{align-items:flex-end;padding:0}
+    .modal{border-radius:24px 24px 0 0;max-height:92vh;overflow:auto;animation:sheet .3s var(--ease)}
+    .modal::before{content:"";display:block;width:44px;height:5px;border-radius:9px;background:#d5dde6;margin:10px auto 0}
+    .mf .btn{flex:1}
+  }
+  @keyframes sheet{from{transform:translateY(100%)}to{transform:none}}
+
+  /* ---------- popups (above modal) ---------- */
+  #pBg{position:fixed;inset:0;background:rgba(10,28,48,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:70;padding:20px}
+  #pBg.on{display:flex;animation:fadeIn .2s}
+  .pop{background:#fff;border-radius:26px;max-width:440px;width:100%;padding:30px 26px 22px;text-align:center;box-shadow:var(--sh-3);animation:popIn .38s var(--ease)}
+  @keyframes popIn{0%{opacity:0;transform:scale(.85)}60%{transform:scale(1.02)}100%{opacity:1;transform:none}}
+  .pop .pi{width:78px;height:78px;border-radius:50%;margin:0 auto 14px;display:grid;place-items:center}
+  .pop .pi svg{width:40px;height:40px}
+  .pop.success .pi{background:var(--ok-l);color:var(--ok)}
+  .pop.error .pi{background:var(--bad-l);color:var(--bad)}
+  .pop.warn .pi{background:var(--warn-l);color:var(--warn)}
+  .pop.confirm .pi{background:var(--ldb-l);color:var(--ldb)}
+  .pop.gift .pi{background:var(--gift-l);color:var(--gift-d)}
+  .pop h4{font-family:var(--f-head);font-size:22px;margin:0 0 6px;color:var(--navy)}
+  .pop p{margin:0 0 16px;color:var(--muted);font-size:16px}
+  .pop .pd{background:#f5f8fb;border-radius:14px;padding:12px 16px;text-align:left;margin-bottom:18px;font-size:16px}
+  .pop .pd .kv{display:flex;justify-content:space-between;gap:12px;padding:5px 0;border-bottom:1px dashed #dde5ee}
+  .pop .pd .kv:last-child{border-bottom:0}
+  .pop .pd .kv span{color:var(--muted)}
+  .pop .pd .kv b{text-align:right}
+  .pop .pb{display:flex;gap:10px}
+  .pop .pb .btn{flex:1}
+  .pop .ck path{stroke-dasharray:40;stroke-dashoffset:40;animation:draw .5s .15s var(--ease) forwards}
+  @keyframes draw{to{stroke-dashoffset:0}}
+  .pop .timer{height:4px;border-radius:9px;background:#e8eef4;overflow:hidden;margin-top:14px}
+  .pop .timer i{display:block;height:100%;background:var(--ok);animation:tm linear forwards}
+  @keyframes tm{from{width:100%}to{width:0}}
+
+  /* ---------- toast & loader ---------- */
+  #toast{position:fixed;left:50%;bottom:110px;transform:translateX(-50%) translateY(20px);background:var(--navy);color:#fff;padding:13px 20px;border-radius:14px;opacity:0;transition:all .3s var(--ease);z-index:80;max-width:92vw;font-size:16px;pointer-events:none;box-shadow:var(--sh-3);display:flex;gap:10px;align-items:center}
+  #toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+  #toast.ok{background:var(--ok)} #toast.err{background:var(--bad)}
+  #loader{position:fixed;inset:0;background:rgba(238,243,248,.55);backdrop-filter:blur(1.5px);display:none;place-items:center;z-index:90}
+  #loader.on{display:grid}
+  .spin{width:48px;height:48px;border:4px solid var(--ldb-l);border-top-color:var(--ldb);border-radius:50%;animation:sp .8s linear infinite}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  #boot{padding:90px 20px;text-align:center;color:var(--muted);font-size:17px}
+
+  /* ---------- receipt ---------- */
+  .rcpt{font-size:16px}
+  .rcpt .rh{text-align:center;margin-bottom:10px}
+  .rcpt .rh b{display:block;font-size:18px;font-family:var(--f-head)}
+  .rcpt h4{text-align:center;margin:8px 0 14px;font-size:20px;font-family:var(--f-head)}
+  .rcpt .kv{display:grid;grid-template-columns:140px 1fr;gap:4px 12px;margin-bottom:14px}
+  .rcpt .kv div:nth-child(odd){color:var(--muted)}
+  .rcpt table td,.rcpt table th{border:1px solid #cfd8e3}
+  .signs{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:28px;text-align:center}
+  .signs div{padding-top:52px;border-bottom:1px dotted #999}
+  .signs span{display:block;margin-top:6px}
+  .rcpt-ok{display:flex;align-items:center;gap:12px;background:var(--ok-l);color:#11613f;border-radius:14px;padding:12px 16px;margin-bottom:16px;font-weight:600}
+  .rcpt-ok svg{width:30px;height:30px;flex:none}
+
+  @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important}}
+
+  #printArea{display:none}
+  @media print{
+    body{background:#fff;padding:0;font-size:13px}
+    body>*:not(#printArea){display:none !important}
+    #printArea{display:block !important;padding:10mm}
+    #printArea table{font-size:12px}
+    #printArea th{background:#eee !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .pill{border:1px solid #999}
+    .rcpt-ok{display:none}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="hbar">
+      <div class="logo">ທພລ</div>
+      <div class="htitle"><b>ລະບົບສະຕັອກສາງ</b><span>ໜ່ວຍບໍລິການ ເມືອງຄອບ · ທະນາຄານພັດທະນາລາວ</span></div>
+      <button class="staff-chip" id="syncBtn" onclick="manualSync()" title="ດຶງຂໍ້ມູນລ່າສຸດຈາກ DATA">↻<span class="t"> ອັບເດດ</span></button>
+      <button class="staff-chip" id="staffChip" onclick="askStaff()">👤 ...</button>
+    </div>
+    <nav class="tabs" id="tabs">
+      <button data-v="dash" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>ໜ້າຫຼັກ</button>
+      <button data-v="items"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>ລາຍການ</button>
+      <button data-v="move"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 4v16M7 4l-4 4M7 4l4 4"/><path d="M17 20V4M17 20l-4-4M17 20l4-4"/></svg>ເຂົ້າ-ອອກ</button>
+      <button data-v="gift"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="8" width="18" height="13" rx="1.5"/><path d="M12 8v13M3 12h18"/><path d="M12 8S10.5 3 7.5 4 9 8 12 8zM12 8s1.5-5 4.5-4S15 8 12 8z"/></svg>ແຈກຊໍາລ້ວຍ</button>
+      <button data-v="report"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>ລາຍງານ</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div id="boot"><div class="spin" style="margin:0 auto 14px"></div>ກຳລັງໂຫຼດຂໍ້ມູນ...</div>
+
+  <!-- ===== ໜ້າຫຼັກ ===== -->
+  <section class="view" id="v-dash">
+    <h2>ພາບລວມສາງ</h2>
+    <p class="sub" id="dashDate"></p>
+    <div class="grid g4" style="margin-bottom:18px">
+      <div class="stat blue click" onclick="show('items')"><span class="ico">📦</span><div class="l">ລາຍການທັງໝົດ</div><div class="v" id="stItems">0</div><div class="s" id="stQty"></div></div>
+      <div class="stat warn click" onclick="goReport('low')"><span class="ico">⚠️</span><div class="l">ໃກ້ໝົດ</div><div class="v" id="stLow">0</div><div class="s">ເຫຼືອເທົ່າ ຫຼື ຕ່ຳກວ່າຂັ້ນຕ່ຳ</div></div>
+      <div class="stat bad click" onclick="goReport('low')"><span class="ico">⛔</span><div class="l">ໝົດສາງ</div><div class="v" id="stOut">0</div><div class="s">ຍອດຄົງເຫຼືອ 0</div></div>
+      <div class="stat gift click" onclick="goReport('gift')"><span class="ico">🎁</span><div class="l">ແຈກຊໍາລ້ວຍມື້ນີ້</div><div class="v" id="stGift">0</div><div class="s" id="stGiftM"></div></div>
+    </div>
+    <div class="card"><h3><span class="ic">📦</span>ສະຫຼຸບຕາມໝວດ</h3><div class="grid g4" id="catCards"></div></div>
+    <div class="grid g2">
+      <div class="card"><h3><span class="ic">⚠️</span>ເຄື່ອງທີ່ຕ້ອງເຕີມ</h3><div id="dashLow"></div></div>
+      <div class="card"><h3><span class="ic">🕘</span>ເຄື່ອນໄຫວລ່າສຸດ</h3><div id="dashRecent"></div></div>
+    </div>
+  </section>
+
+  <!-- ===== ລາຍການເຄື່ອງ ===== -->
+  <section class="view" id="v-items">
+    <div class="row" style="margin-bottom:6px"><div class="sp"><h2>ລາຍການເຄື່ອງໃນສາງ</h2><p class="sub">ກົດທີ່ແຖວເພື່ອແກ້ໄຂ / ຕັ້ງຂັ້ນຕ່ຳ</p></div>
+      <button class="btn b-pri" onclick="openItem()">＋ ເພີ່ມລາຍການ</button></div>
+    <div class="card">
+      <input type="text" id="itemQ" placeholder="🔍 ຄົ້ນຫາ ລະຫັດ ຫຼື ຊື່ລາຍການ..." oninput="renderItems()" style="margin-bottom:10px">
+      <div class="chips" id="itemCats"></div>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>ລະຫັດ</th><th>ຊື່ລາຍການ</th><th class="num">ຍົກມາ</th><th class="num">ເຂົ້າ</th><th class="num">ອອກ</th><th>ຄົງເຫຼືອ</th><th class="num">ຂັ້ນຕ່ຳ</th><th class="c">ສະຖານະ</th></tr></thead>
+        <tbody id="itemBody"></tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- ===== ເຂົ້າ-ອອກ ===== -->
+  <section class="view" id="v-move">
+    <h2>ເຕີມເຄື່ອງ / ຕັດເຄື່ອງອອກ</h2>
+    <p class="sub">ທຸກການເຄື່ອນໄຫວຈະຖືກບັນທຶກໃນ LOG ແລະ ປັບຍອດໃນ DATA ອັດຕະໂນມັດ</p>
+    <div class="seg" id="moveSeg">
+      <button data-m="in" class="on">⬇️ ເຕີມເຄື່ອງ</button>
+      <button data-m="out">⬆️ ຕັດເຄື່ອງອອກ</button>
+      <button data-m="adj">🔄 ປັບຍອດ (ກວດນັບ)</button>
+    </div>
+    <div class="grid g2">
+      <div class="card">
+        <div id="moveHint"></div>
+        <label class="f"><span>ໝວດ</span><select id="mvCat" onchange="fillMoveItems()"></select></label>
+        <label class="f"><span>ລາຍການ <i>*</i></span><select id="mvItem" onchange="showMoveItem()"></select></label>
+        <div class="itembox" id="mvBox" style="display:none"></div>
+        <div class="grid g2">
+          <label class="f" id="mvQtyWrap"><span id="mvQtyLbl">ຈຳນວນ <i>*</i></span><input type="number" id="mvQty" min="0" step="1" inputmode="numeric" oninput="previewAdj()"></label>
+          <label class="f"><span>ວັນທີ</span><input type="date" id="mvDate"></label>
+        </div>
+        <div id="adjPreview"></div>
+        <label class="f" id="mvPartyWrap"><span id="mvPartyLbl">ແຫຼ່ງທີ່ມາ</span><input type="text" id="mvParty"></label>
+        <label class="f"><span>ເລກເອກະສານອ້າງອີງ</span><input type="text" id="mvRef" placeholder="ເຊັ່ນ ເລກໃບສະເໜີ / ໃບເບີກ"></label>
+        <label class="f"><span id="mvNoteLbl">ໝາຍເຫດ</span><textarea id="mvNote"></textarea></label>
+        <button class="btn b-ok b-block" id="mvBtn" onclick="submitMove()">ບັນທຶກ</button>
+      </div>
+      <div class="card"><h3><span class="ic">🕘</span>ລາຍການເຂົ້າ-ອອກ ມື້ນີ້</h3><div id="moveToday"></div></div>
+    </div>
+  </section>
+
+  <!-- ===== ແຈກຊໍາລ້ວຍ ===== -->
+  <section class="view" id="v-gift">
+    <h2>ແຈກເຄື່ອງຊໍາລ້ວຍ</h2>
+    <p class="sub">ສະເພາະລູກຄ້າທີ່ມີບັນຊີກັບ ທພລ — ຕ້ອງລະບຸ ຊື່ບັນຊີ, ເລກບັນຊີ, ປະເພດບັນຊີ ແລະ ຈຳນວນເງິນ ກ່ອນແຈກ</p>
+    <div class="grid g2">
+      <div class="card">
+        <h3><span class="ic">👤</span>ຂໍ້ມູນບັນຊີລູກຄ້າ</h3>
+        <label class="f"><span>ເລກບັນຊີ <i>*</i></span><input type="text" id="gAcc" inputmode="numeric" placeholder="ຕົວເລກເທົ່ານັ້ນ" onblur="lookupAccount()" oninput="accTyping()"></label>
+        <div id="accInfo"></div>
+        <label class="f"><span>ຊື່ບັນຊີ <i>*</i></span><input type="text" id="gName" placeholder="ຊື່ ແລະ ນາມສະກຸນ ຕາມບັນຊີ"></label>
+        <label class="f"><span>ປະເພດບັນຊີ <i>*</i></span><div class="radios" id="gType"></div></label>
+        <div class="grid g2">
+          <label class="f"><span>ຈຳນວນເງິນ <i>*</i></span><input type="text" id="gAmt" inputmode="decimal" placeholder="0" oninput="fmtAmt(this);renderTiles()"></label>
+          <label class="f"><span>ສະກຸນເງິນ</span><select id="gCur" onchange="renderTiles()"></select></label>
+        </div>
+        <label class="f"><span>ເບີໂທ</span><input type="tel" id="gPhone" placeholder="020 xxxx xxxx"></label>
+        <label class="f"><span>ໝາຍເຫດ</span><input type="text" id="gNote" placeholder="ເຊັ່ນ ເປີດບັນຊີໃໝ່ / ໂປຣໂມຊັນ ..."></label>
+      </div>
+      <div class="card">
+        <h3><span class="ic">🎁</span>ເລືອກເຄື່ອງຊໍາລ້ວຍ</h3>
+        <div class="tiles" id="giftTiles"></div>
+        <div id="cartSum" style="margin-top:14px"></div>
+        <button class="btn b-gift b-block" style="margin-top:10px" onclick="reviewGift()">ກວດສອບ ແລະ ບັນທຶກການແຈກ</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="row" style="margin-bottom:10px"><h3 style="margin:0" class="sp"><span class="ic">🧾</span>ໃບຮັບທີ່ແຈກມື້ນີ້</h3><button class="btn b-gh b-sm" onclick="loadGiftToday()">↻ ໂຫຼດໃໝ່</button></div>
+      <div id="giftToday"></div>
+    </div>
+  </section>
+
+  <!-- ===== ລາຍງານ ===== -->
+  <section class="view" id="v-report">
+    <h2>ລາຍງານ</h2>
+    <p class="sub">ເລືອກປະເພດລາຍງານ, ກັ່ນຕອງ, ພິມ ຫຼື ດາວໂຫຼດ CSV</p>
+    <div class="seg" id="repSeg">
+      <button data-r="low" class="on">⚠️ ເຄື່ອງເຫຼືອນ້ອຍ</button>
+      <button data-r="gift">🎁 ແຈກຊໍາລ້ວຍ</button>
+      <button data-r="hist">📜 ປະຫວັດເຂົ້າ-ອອກ</button>
+      <button data-r="sum">📊 ສະຫຼຸບສະຕັອກ</button>
+    </div>
+    <div class="card" id="repFilter"></div>
+    <div id="repOut"></div>
+  </section>
+</main>
+
+<!-- modal -->
+<div class="modal-bg" id="mBg" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="mBox">
+    <div class="mh"><b id="mTitle"></b><button class="x" onclick="closeModal()">×</button></div>
+    <div class="mb" id="mBody"></div>
+    <div class="mf" id="mFoot"></div>
+  </div>
+</div>
+<div id="pBg"></div>
+<div id="toast"></div>
+<div id="loader"><div class="spin"></div></div>
+<div id="printArea"></div>
+
+<script>
+/* ================= STATE ================= */
+const S = { cfg:null, items:[], staff:'', moveMode:'in', repMode:'low', itemCat:'', cart:{}, gType:'', lastRep:null, accHistory:null };
+
+/* ================= UTIL ================= */
+const $ = id => document.getElementById(id);
+const esc = s => String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const nf = n => Number(n||0).toLocaleString('en-US');
+const nfd = n => Number(n||0).toLocaleString('en-US',{maximumFractionDigits:2});
+const rawNum = s => Number(String(s||'').replace(/,/g,'')) || 0;
+
+const API_URL='https://script.google.com/macros/s/AKfycby4H46YmycQaBo8Kr1jij7GkUSpzRs5EWJ4vzcxUwdImJ2-XHSfG73e5JBo8cNTekEE/exec';
+const PIN_KEY='mkStockPin';
+function api(fn, ...args){
+  if(window.google&&google.script&&google.script.run){
+    return new Promise((res,rej)=>google.script.run.withSuccessHandler(res).withFailureHandler(e=>rej(e&&e.message?e.message:String(e)))[fn](...args));
+  }
+  let pin='';try{pin=localStorage.getItem(PIN_KEY)||'';}catch(_){}
+  return fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({fn:fn,args:args,key:pin})})
+    .then(r=>{if(!r.ok)throw new Error('ເຊີບເວີຕອບກັບຜິດພາດ ('+r.status+')');return r.json();})
+    .then(j=>{
+      if(j.ok)return j.data;
+      if(j.code==='AUTH')return askPin_(pin?j.error:'').then(()=>api(fn,...args));
+      throw new Error(j.error||'ເກີດຂໍ້ຜິດພາດ');
+    })
+    .catch(e=>{
+      if(e instanceof TypeError)throw 'ເຊື່ອມຕໍ່ເຊີບເວີບໍ່ໄດ້ ກະລຸນາກວດອິນເຕີເນັດ';
+      throw (e&&e.message?e.message:String(e));
+    });
+}
+let pinPromise_=null;
+function askPin_(msg){
+  if(pinPromise_)return pinPromise_;
+  pinPromise_=new Promise(resolve=>{
+    const ov=document.createElement('div');
+    ov.style.cssText='position:fixed;inset:0;z-index:99999;background:rgba(10,35,60,.65);display:flex;align-items:center;justify-content:center;padding:20px';
+    ov.innerHTML='<form style="background:#fff;border-radius:16px;padding:24px;width:100%;max-width:340px;box-shadow:0 10px 40px rgba(0,0,0,.25);text-align:center;font-family:inherit">'
+      +'<div style="font-size:18px;font-weight:700;color:#1b4f7a;margin-bottom:4px">ລະຫັດເຂົ້າໃຊ້ລະບົບ</div>'
+      +'<div style="font-size:13px;color:#6b7c93;margin-bottom:8px">ລະບົບສະຕັອກສາງ - ໜ່ວຍບໍລິການ ເມືອງຄອບ</div>'
+      +'<div class="pin-msg" style="font-size:13px;color:#c0392b;min-height:18px;margin-bottom:8px"></div>'
+      +'<input type="password" inputmode="numeric" autocomplete="current-password" required style="width:100%;box-sizing:border-box;padding:12px;border:1px solid #cfd8e3;border-radius:10px;font-size:18px;text-align:center;letter-spacing:4px">'
+      +'<button type="submit" style="margin-top:14px;width:100%;padding:12px;border:0;border-radius:10px;background:#2778b9;color:#fff;font-size:16px;font-weight:600;font-family:inherit;cursor:pointer">ເຂົ້າໃຊ້</button></form>';
+    ov.querySelector('.pin-msg').textContent=msg||'';
+    const form=ov.querySelector('form'),input=ov.querySelector('input');
+    form.onsubmit=ev=>{ev.preventDefault();try{localStorage.setItem(PIN_KEY,input.value.trim());}catch(_){}ov.remove();pinPromise_=null;resolve();};
+    document.body.appendChild(ov);setTimeout(()=>input.focus(),50);
+  });
+  return pinPromise_;
+}
+let loadCount = 0;
+function loading(on){ loadCount += on?1:-1; if(loadCount<0) loadCount=0; $('loader').classList.toggle('on', loadCount>0); }
+async function call(fn, ...args){
+  loading(true);
+  try { return await api(fn, ...args); }
+  catch(e){ loading(false); loadCount=0; errorPop(e); throw e; }
+  finally { loading(false); }
+}
+
+/* ================= POPUPS ================= */
+const ICONS = {
+  success:'<svg class="ck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+  error:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M15 9l-6 6M9 9l6 6"/></svg>',
+  warn:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l10 18H2L12 3z"/><path d="M12 10v4M12 17.5h.01"/></svg>',
+  confirm:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2.5"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>',
+  gift:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="8" width="18" height="13" rx="1.5"/><path d="M12 8v13M3 12h18"/><path d="M12 8S10.5 3 7.5 4 9 8 12 8zM12 8s1.5-5 4.5-4S15 8 12 8z"/></svg>'
+};
+/** popup({type,title,msg,details:[[label,htmlValue]],ok,cancel,okClass,auto}) → Promise<boolean> */
+function popup(o){
+  o = Object.assign({type:'confirm', msg:'', details:null, ok:'ຕົກລົງ', cancel:null, okClass:'b-pri', auto:0}, o);
+  return new Promise(res => {
+    const bg = $('pBg');
+    bg.innerHTML = '<div class="pop '+o.type+'" role="alertdialog" aria-modal="true"><div class="pi">'+(ICONS[o.type]||ICONS.confirm)+'</div>'+
+      '<h4>'+esc(o.title)+'</h4>'+(o.msg ? '<p>'+o.msg+'</p>' : '')+
+      (o.details ? '<div class="pd">'+o.details.map(d => '<div class="kv"><span>'+esc(d[0])+'</span><b>'+d[1]+'</b></div>').join('')+'</div>' : '')+
+      '<div class="pb">'+(o.cancel ? '<button class="btn b-gh" data-r="0">'+esc(o.cancel)+'</button>' : '')+'<button class="btn '+o.okClass+'" data-r="1">'+esc(o.ok)+'</button></div>'+
+      (o.auto ? '<div class="timer"><i style="animation-duration:'+o.auto+'ms"></i></div>' : '')+'</div>';
+    bg.classList.add('on');
+    let closed = false, t;
+    const done = v => { if(closed) return; closed = true; clearTimeout(t); bg.classList.remove('on'); document.removeEventListener('keydown', kd); res(v); };
+    const kd = e => { if(e.key==='Escape') done(false); };
+    document.addEventListener('keydown', kd);
+    bg.querySelectorAll('[data-r]').forEach(b => b.onclick = () => done(b.dataset.r==='1'));
+    bg.onclick = e => { if(e.target===bg) done(false); };
+    if(o.auto) t = setTimeout(() => done(true), o.auto);
+    setTimeout(() => { const b = bg.querySelector('[data-r="1"]'); if(b) b.focus(); }, 60);
+  });
+}
+function successPop(title, msg, details){ return popup({type:'success', title, msg, details, ok:'ຕົກລົງ', okClass:'b-ok', auto:3800}); }
+function errorPop(msg){ return popup({type:'error', title:'ບັນທຶກບໍ່ສຳເລັດ', msg:esc(msg), ok:'ເຂົ້າໃຈແລ້ວ', okClass:'b-bad'}); }
+function levelBar(it){
+  const cap = Math.max(it.min*2, it.balance, 1);
+  const pct = Math.max(it.balance>0?4:0, Math.min(100, Math.round(it.balance/cap*100)));
+  return '<div class="lvl '+(it.level||'ok')+'"><div class="bar"><i style="width:'+pct+'%"></i></div><b>'+nf(it.balance)+'</b></div>';
+}
+function lowAlertOnce(d){
+  let seen = null; try{ seen = sessionStorage.getItem('ldb_low_seen'); }catch(e){}
+  const n = d.lowCount + d.outCount;
+  if(!n || seen) return;
+  try{ sessionStorage.setItem('ldb_low_seen','1'); }catch(e){}
+  popup({type:'warn', title:'ມີເຄື່ອງຕ້ອງເຕີມ '+n+' ລາຍການ', msg:'ໝົດສາງ <b>'+d.outCount+'</b> ລາຍການ · ໃກ້ໝົດ <b>'+d.lowCount+'</b> ລາຍການ',
+    ok:'ເບິ່ງລາຍງານ', cancel:'ໄວ້ທີຫຼັງ', okClass:'b-pri'}).then(v => { if(v) goReport('low'); });
+}
+let tT;
+function toast(msg, type, ms){
+  const t = $('toast'); t.textContent = msg; t.className = 'on ' + (type||'');
+  clearTimeout(tT); tT = setTimeout(() => t.className = '', ms || 2800);
+}
+function store(k, v){ try{ if(v===undefined) return localStorage.getItem(k); localStorage.setItem(k, v); }catch(e){ return null; } }
+
+function levelPill(it){
+  if(it.status && it.status !== 'ໃຊ້ງານ') return '<span class="pill p-stop">ຢຸດໃຊ້</span>';
+  if(it.level === 'none') return '<span class="pill p-stop">ບໍ່ມີສະຕັອກ</span>';
+  if(it.level === 'out') return '<span class="pill p-out">ໝົດ</span>';
+  if(it.level === 'low') return '<span class="pill p-low">ໃກ້ໝົດ</span>';
+  return '<span class="pill p-ok">ພໍໃຊ້</span>';
+}
+function typePill(t){
+  const m = {'ເຂົ້າ':'p-in','ອອກ':'p-outx','ແຈກຊໍາລ້ວຍ':'p-gift','ປັບຍອດ':'p-adj','ຍົກເລີກການແຈກ':'p-cancel'};
+  return '<span class="pill '+(m[t]||'p-adj')+'">'+esc(t)+'</span>';
+}
+function signed(x){
+  if(x.type==='ເຂົ້າ' || x.type==='ຍົກເລີກການແຈກ') return '+'+nf(x.qty);
+  if(x.type==='ອອກ' || x.type==='ແຈກຊໍາລ້ວຍ') return '-'+nf(x.qty);
+  return (x.qty>0?'+':'')+nf(x.qty);
+}
+function itemBy(code){ return S.items.find(i => i.code === code); }
+
+/* ================= MODAL ================= */
+function openModal(title, body, foot, wide){
+  $('mTitle').textContent = title; $('mBody').innerHTML = body; $('mFoot').innerHTML = foot || '';
+  $('mBox').classList.toggle('wide', !!wide); $('mBg').classList.add('on');
+}
+function closeModal(){ $('mBg').classList.remove('on'); }
+
+/* ================= INIT ================= */
+async function init(){
+  try{
+    const d = await api('getInitData');
+    S.cfg = d; S.items = d.items;
+    $('boot').style.display = 'none';
+    S.staff = store('ldb_stock_staff') || '';
+    updateStaffChip();
+    buildStatic();
+    renderAll(d.dashboard);
+    show('dash');
+    if(!S.staff) setTimeout(askStaff, 400);
+    else setTimeout(() => lowAlertOnce(d.dashboard), 500);
+  }catch(e){
+    $('boot').innerHTML = '<div style="color:#d64545">ໂຫຼດຂໍ້ມູນບໍ່ສຳເລັດ: '+esc(e)+'</div><br><button class="btn b-pri" onclick="location.reload()">ລອງໃໝ່</button>';
+  }
+}
+async function refresh(){
+  const d = await api('getInitData');
+  applyData(d);
+}
+function applyData(d){
+  const catsChanged = JSON.stringify(d.categories) !== JSON.stringify(S.cfg.categories);
+  S.cfg.categories = d.categories; S.cfg.today = d.today;
+  S.items = d.items;
+  if(catsChanged) buildCatChips();
+  renderAll(d.dashboard);
+  if(d.newItems) toast('ພົບສິນຄ້າໃໝ່ '+d.newItems+' ລາຍການໃນ DATA — ເພີ່ມເຂົ້າລະບົບແລ້ວ', 'ok', 4000);
+}
+async function manualSync(){
+  loading(true);
+  try{ applyData(await api('getInitData')); toast('ອັບເດດຂໍ້ມູນລ່າສຸດແລ້ວ','ok'); }
+  catch(e){ toast(e,'err',5000); }
+  finally{ loading(false); }
+}
+// ກັບມາທີ່ແທັບນີ້ (ເຊັ່ນ ຫຼັງຈາກໄປເພີ່ມສິນຄ້າໃນ Sheet) → ດຶງຂໍ້ມູນໃໝ່ອັດຕະໂນມັດ
+let lastAuto = Date.now();
+document.addEventListener('visibilitychange', () => {
+  if(document.visibilityState === 'visible' && S.cfg && Date.now() - lastAuto > 15000){
+    lastAuto = Date.now(); api('getInitData').then(applyData).catch(()=>{});
+  }
+});
+function buildCatChips(){
+  const cats = S.cfg.categories;
+  if(S.itemCat && !cats.includes(S.itemCat)) S.itemCat = '';
+  $('itemCats').innerHTML = ['<button class="chip'+(S.itemCat?'':' on')+'" data-c="">ທັງໝົດ</button>'].concat(cats.map(c => '<button class="chip'+(S.itemCat===c?' on':'')+'" data-c="'+esc(c)+'">'+esc(c)+'</button>')).join('');
+  $('itemCats').querySelectorAll('.chip').forEach(b => b.onclick = () => {
+    S.itemCat = b.dataset.c; $('itemCats').querySelectorAll('.chip').forEach(x => x.classList.toggle('on', x===b)); renderItems();
+  });
+}
+function renderAll(dash){
+  renderDash(dash); renderItems(); fillMoveItems(); renderTiles();
+}
+function buildStatic(){
+  $('tabs').querySelectorAll('button').forEach(b => b.onclick = () => show(b.dataset.v));
+  $('moveSeg').querySelectorAll('button').forEach(b => b.onclick = () => setMoveMode(b.dataset.m));
+  $('repSeg').querySelectorAll('button').forEach(b => b.onclick = () => setRep(b.dataset.r));
+  buildCatChips();
+  $('gType').innerHTML = S.cfg.accountTypes.map(t => '<label><input type="radio" name="gtype" value="'+esc(t)+'">'+esc(t)+'</label>').join('');
+  $('gType').querySelectorAll('label').forEach(l => l.onclick = () => {
+    S.gType = l.querySelector('input').value;
+    $('gType').querySelectorAll('label').forEach(x => x.classList.toggle('on', x===l));
+  });
+  $('gCur').innerHTML = S.cfg.currencies.map(c => '<option>'+c+'</option>').join('');
+  $('mvDate').value = S.cfg.today; $('mvDate').max = S.cfg.today;
+  setMoveMode('in');
+}
+function show(v){
+  document.querySelectorAll('.view').forEach(s => s.classList.toggle('on', s.id === 'v-'+v));
+  $('tabs').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === v));
+  window.scrollTo(0,0);
+  if(v==='move') loadMoveToday();
+  if(v==='gift') loadGiftToday();
+  if(v==='report') setRep(S.repMode);
+}
+function updateStaffChip(){ $('staffChip').textContent = '👤 ' + (S.staff || 'ໃສ່ຊື່ຜູ້ບັນທຶກ'); }
+function askStaff(){
+  openModal('ຊື່ຜູ້ບັນທຶກ', '<p class="sub">ຊື່ນີ້ຈະຖືກບັນທຶກໃນທຸກລາຍການ ເຂົ້າ-ອອກ ແລະ ການແຈກ (ຈື່ໄວ້ໃນເຄື່ອງນີ້)</p><label class="f"><span>ຊື່ ແລະ ນາມສະກຸນ</span><input type="text" id="staffIn" value="'+esc(S.staff)+'"></label>',
+    '<button class="btn b-pri" onclick="saveStaff()">ບັນທຶກ</button>');
+  setTimeout(() => $('staffIn') && $('staffIn').focus(), 100);
+}
+function saveStaff(){
+  const v = $('staffIn').value.trim(); if(!v){ toast('ກະລຸນາໃສ່ຊື່','err'); return; }
+  const first = !S.staff;
+  S.staff = v; store('ldb_stock_staff', v); updateStaffChip(); closeModal();
+  toast('ສະບາຍດີ '+v+' 👋', 'ok');
+  if(first && S.lastDash) setTimeout(() => lowAlertOnce(S.lastDash), 400);
+}
+function needStaff(){ if(!S.staff){ askStaff(); toast('ກະລຸນາໃສ່ຊື່ຜູ້ບັນທຶກກ່ອນ','err'); return false; } return true; }
+
+/* ================= DASHBOARD ================= */
+function renderDash(d){
+  S.lastDash = d;
+  $('dashDate').textContent = 'ຂໍ້ມູນ ນະ ວັນທີ ' + S.cfg.today;
+  $('stItems').textContent = nf(d.totalItems); $('stQty').textContent = 'ລວມ ' + nf(d.totalQty) + ' ຫົວໜ່ວຍ';
+  $('stLow').textContent = nf(d.lowCount); $('stOut').textContent = nf(d.outCount);
+  $('stGift').textContent = nf(d.giftTodayCustomers) + ' ລາຍ';
+  $('stGiftM').textContent = nf(d.giftTodayPcs) + ' ຊິ້ນ · ເດືອນນີ້ ' + nf(d.giftMonthCustomers) + ' ລາຍ';
+  $('catCards').innerHTML = d.byCategory.map(c =>
+    '<div class="catcard"><b>'+esc(c.name)+'</b><div class="n">'+nf(c.items)+' ລາຍການ · '+nf(c.qty)+' ຫົວໜ່ວຍ</div>'+
+    (c.low ? '<span class="pill p-low" style="margin-top:6px">'+c.low+' ລາຍການຕ້ອງເຕີມ</span>' : '<span class="pill p-ok" style="margin-top:6px">ປົກກະຕິ</span>')+'</div>').join('');
+  const low = S.items.filter(i => i.status==='ໃຊ້ງານ' && (i.level==='low'||i.level==='out')).sort((a,b)=>(a.balance-a.min)-(b.balance-b.min)).slice(0,8);
+  $('dashLow').innerHTML = low.length ? '<div class="tbl-wrap"><table><tbody>'+low.map(i =>
+    '<tr class="click" onclick="quickIn(\''+esc(i.code)+'\')" title="ກົດເພື່ອເຕີມເຄື່ອງ"><td><b>'+esc(i.name)+'</b><div class="small muted">'+esc(i.code)+' · '+esc(i.category)+'</div></td><td style="min-width:150px">'+levelBar(i)+'<div class="small muted">ຂັ້ນຕ່ຳ '+nf(i.min)+' '+esc(i.unit)+'</div></td><td class="c hide-m">'+levelPill(i)+'</td></tr>').join('')+'</tbody></table></div>'
+    : '<div class="empty"><span class="e-ic">✅</span>ທຸກລາຍການມີພຽງພໍ</div>';
+  $('dashRecent').innerHTML = d.recent.length ? '<div class="tbl-wrap"><table><tbody>'+d.recent.map(x =>
+    '<tr><td>'+typePill(x.type)+'<div class="small muted">'+esc(x.date)+'</div></td><td>'+esc(x.name)+'<div class="small muted">'+esc(x.party)+'</div></td><td class="num"><b>'+signed(x)+'</b></td></tr>').join('')+'</tbody></table></div>'
+    : '<div class="empty"><span class="e-ic">🗂️</span>ຍັງບໍ່ມີການເຄື່ອນໄຫວ — ເລີ່ມໄດ້ທີ່ໜ້າ ເຂົ້າ-ອອກ</div>';
+}
+function goReport(r){ S.repMode = r; show('report'); }
+
+/* ================= ITEMS ================= */
+function renderItems(){
+  const q = ($('itemQ').value||'').toLowerCase().trim();
+  const list = S.items.filter(i => (!S.itemCat || i.category===S.itemCat) && (!q || (i.code+' '+i.name).toLowerCase().includes(q)));
+  let html = '', cat = '';
+  list.forEach(i => {
+    if(!S.itemCat && i.category !== cat){ cat = i.category; html += '<tr class="grp"><td colspan="8">'+esc(cat)+'</td></tr>'; }
+    html += '<tr class="click" onclick="openItem(\''+esc(i.code)+'\')"><td class="mono">'+esc(i.code)+'</td><td>'+esc(i.name)+(i.type?'<div class="small muted">'+esc(i.type)+'</div>':'')+
+      (i.giftMin>0?'<div class="small muted">ເງິນຝາກຂັ້ນຕ່ຳ '+nf(i.giftMin)+' ກີບ</div>':'')+
+      '</td><td class="num">'+nf(i.opening)+'</td><td class="num">'+nf(i.totalIn)+'</td><td class="num">'+nf(i.totalOut)+
+      '</td><td style="min-width:170px">'+levelBar(i)+'<div class="small muted">'+esc(i.unit)+'</div></td><td class="num">'+nf(i.min)+'</td><td class="c">'+levelPill(i)+'</td></tr>';
+  });
+  $('itemBody').innerHTML = html || '<tr><td colspan="8" class="empty">ບໍ່ພົບລາຍການ</td></tr>';
+}
+function openItem(code){
+  const it = code ? itemBy(code) : null;
+  const cats = S.cfg.categories.map(c => '<option '+(it && it.category===c?'selected':'')+'>'+esc(c)+'</option>').join('');
+  const body =
+    (it ? '<div class="infobox">ລະຫັດ <b>'+esc(it.code)+'</b> · ຄົງເຫຼືອ <b>'+nf(it.balance)+' '+esc(it.unit)+'</b> · ອັບເດດ '+esc(it.updated)+'</div>' : '')+
+    '<label class="f"><span>ໝວດ <i>*</i></span><select id="iCat" '+(it?'disabled':'')+' onchange="toggleGiftMin()">'+cats+'</select></label>'+
+    '<label class="f"><span>ຊື່ລາຍການ <i>*</i></span><input type="text" id="iName" value="'+esc(it?it.name:'')+'"></label>'+
+    '<div class="grid g2"><label class="f"><span>ຫົວໜ່ວຍ <i>*</i></span><input type="text" id="iUnit" value="'+esc(it?it.unit:'')+'" placeholder="ອັນ, ຫົວ, ກັບ..."></label>'+
+    (it ? '' : '<label class="f"><span>ຍອດຍົກມາ (ຈຳນວນເລີ່ມຕົ້ນ)</span><input type="number" id="iOpen" min="0" value="0"></label>')+
+    '<label class="f"><span>ຂັ້ນຕ່ຳ (ແຈ້ງເຕືອນເມື່ອເຫຼືອ ≤)</span><input type="number" id="iMin" min="0" value="'+(it?it.min:0)+'"></label></div>'+
+    '<label class="f" id="iGiftWrap"><span>ເງິນຝາກຂັ້ນຕ່ຳ ເພື່ອຮັບເຄື່ອງນີ້ (ກີບ) — 0 = ບໍ່ກຳນົດ</span><input type="number" id="iGift" min="0" value="'+(it?it.giftMin:0)+'"></label>'+
+    (it ? '<label class="f"><span>ສະຖານະ</span><select id="iStatus"><option '+(it.status==='ໃຊ້ງານ'?'selected':'')+'>ໃຊ້ງານ</option><option '+(it.status==='ຢຸດໃຊ້'?'selected':'')+'>ຢຸດໃຊ້</option></select></label>' : '')+
+    '<label class="f"><span>ໝາຍເຫດ</span><input type="text" id="iNote" value="'+esc(it?it.note:'')+'"></label>';
+  openModal(it ? 'ແກ້ໄຂລາຍການ' : 'ເພີ່ມລາຍການໃໝ່', body,
+    '<button class="btn b-gh" onclick="closeModal()">ຍົກເລີກ</button><button class="btn b-pri" onclick="saveItem(\''+(it?esc(it.code):'')+'\')">ບັນທຶກ</button>');
+  if(!it && S.itemCat) $('iCat').value = S.itemCat;
+  toggleGiftMin();
+}
+function toggleGiftMin(){ const w = $('iGiftWrap'); if(w) w.style.display = $('iCat').value === S.cfg.giftCategory ? '' : 'none'; }
+async function saveItem(code){
+  const p = { code, category:$('iCat').value, name:$('iName').value, unit:$('iUnit').value, min:$('iMin').value,
+    giftMin:$('iGift').value, note:$('iNote').value, status: $('iStatus') ? $('iStatus').value : 'ໃຊ້ງານ', opening: $('iOpen') ? $('iOpen').value : 0 };
+  const r = await call('saveItem', p);
+  closeModal(); await refresh();
+  successPop(code ? 'ແກ້ໄຂລາຍການແລ້ວ' : 'ເພີ່ມລາຍການແລ້ວ', esc(r.message), [['ລະຫັດ', esc(r.code)], ['ຊື່ລາຍການ', esc(p.name)]]);
+}
+
+/* ================= MOVE ================= */
+function setMoveMode(m){
+  S.moveMode = m;
+  const seg = $('moveSeg'); seg.className = 'seg ' + (m==='in'?'in':m==='out'?'out':'');
+  seg.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.m===m));
+  const btn = $('mvBtn');
+  $('adjPreview').innerHTML = '';
+  if(m==='in'){
+    $('mvQtyLbl').innerHTML = 'ຈຳນວນທີ່ເຕີມ <i>*</i>'; $('mvPartyLbl').innerHTML = 'ແຫຼ່ງທີ່ມາ (ສາຂາ / ຜູ້ສະໜອງ)'; $('mvParty').placeholder = 'ເຊັ່ນ ສຳນັກງານໃຫຍ່ / ຮ້ານ...';
+    $('mvNoteLbl').textContent = 'ໝາຍເຫດ'; btn.className = 'btn b-ok b-block'; btn.textContent = '⬇️ ບັນທຶກເຕີມເຄື່ອງ';
+    $('mvPartyWrap').style.display = ''; $('moveHint').innerHTML = '';
+  } else if(m==='out'){
+    $('mvQtyLbl').innerHTML = 'ຈຳນວນທີ່ຕັດອອກ <i>*</i>'; $('mvPartyLbl').innerHTML = 'ຜູ້ຮັບ / ພາກສ່ວນທີ່ເບີກ <i>*</i>'; $('mvParty').placeholder = 'ເຊັ່ນ ເຄົາເຕີ 1 / ທ້າວ...';
+    $('mvNoteLbl').textContent = 'ຈຸດປະສົງ / ໝາຍເຫດ'; btn.className = 'btn b-bad b-block'; btn.textContent = '⬆️ ບັນທຶກຕັດເຄື່ອງອອກ';
+    $('mvPartyWrap').style.display = '';
+    $('moveHint').innerHTML = '<div class="infobox">🎁 ເຄື່ອງຊໍາລ້ວຍ ບໍ່ສາມາດຕັດອອກຢູ່ນີ້ — ຕ້ອງແຈກຜ່ານໜ້າ <b>ແຈກຊໍາລ້ວຍ</b> ເພື່ອບັນທຶກບັນຊີລູກຄ້າ</div>';
+  } else {
+    $('mvQtyLbl').innerHTML = 'ຈຳນວນນັບໄດ້ຕົວຈິງ <i>*</i>'; $('mvNoteLbl').innerHTML = 'ເຫດຜົນການປັບຍອດ <i>*</i>';
+    btn.className = 'btn b-pri b-block'; btn.textContent = '🔄 ບັນທຶກປັບຍອດ';
+    $('mvPartyWrap').style.display = 'none';
+    $('moveHint').innerHTML = '<div class="warnbox">ໃຊ້ເມື່ອກວດນັບສາງແລ້ວຍອດບໍ່ກົງ ຫຼື ເຄື່ອງເສຍຫາຍ/ເສື່ອມ — ລະບົບຈະບັນທຶກສ່ວນຕ່າງໃນ LOG</div>';
+  }
+  fillMoveItems();
+}
+function fillMoveItems(){
+  if(!S.cfg) return;
+  const catSel = $('mvCat'); const cur = catSel.value;
+  const cats = S.cfg.categories.filter(c => !(S.moveMode==='out' && c===S.cfg.giftCategory));
+  catSel.innerHTML = '<option value="">— ທຸກໝວດ —</option>' + cats.map(c => '<option>'+esc(c)+'</option>').join('');
+  if(cats.includes(cur)) catSel.value = cur;
+  const prev = $('mvItem').value;
+  let html = '<option value="">— ເລືອກລາຍການ —</option>';
+  cats.filter(c => !catSel.value || c===catSel.value).forEach(c => {
+    const list = S.items.filter(i => i.category===c && i.status==='ໃຊ້ງານ');
+    if(!list.length) return;
+    html += '<optgroup label="'+esc(c)+'">' + list.map(i => '<option value="'+esc(i.code)+'">'+esc(i.code)+' · '+esc(i.name)+' (ເຫຼືອ '+nf(i.balance)+' '+esc(i.unit)+')</option>').join('') + '</optgroup>';
+  });
+  $('mvItem').innerHTML = html;
+  if(prev && [...$('mvItem').options].some(o => o.value===prev)) $('mvItem').value = prev;
+  showMoveItem();
+}
+function showMoveItem(){
+  const it = itemBy($('mvItem').value); const box = $('mvBox');
+  if(!it){ box.style.display='none'; return; }
+  box.style.display='flex';
+  box.innerHTML = '<div class="sp"><b>'+esc(it.name)+'</b><div class="small muted">'+esc(it.code)+' · '+esc(it.category)+' · ຂັ້ນຕ່ຳ '+nf(it.min)+'</div><div style="margin-top:8px;max-width:260px">'+levelBar(it)+'</div></div><div style="text-align:right"><div class="small muted">ຄົງເຫຼືອ</div><div class="big">'+nf(it.balance)+'</div><div class="small muted">'+esc(it.unit)+'</div></div>';
+  previewAdj();
+}
+function previewAdj(){
+  if(S.moveMode!=='adj'){ $('adjPreview').innerHTML=''; return; }
+  const it = itemBy($('mvItem').value); const v = $('mvQty').value;
+  if(!it || v===''){ $('adjPreview').innerHTML=''; return; }
+  const diff = Number(v) - it.balance;
+  $('adjPreview').innerHTML = '<div class="'+(diff===0?'okbox':'warnbox')+'">ຍອດໃນລະບົບ '+nf(it.balance)+' → ນັບໄດ້ '+nf(v)+' · ສ່ວນຕ່າງ <b>'+(diff>0?'+':'')+nf(diff)+'</b> '+esc(it.unit)+'</div>';
+}
+async function submitMove(){
+  if(!needStaff()) return;
+  const code = $('mvItem').value; if(!code){ toast('ກະລຸນາເລືອກລາຍການ','err'); return; }
+  const base = { code, date:$('mvDate').value, party:$('mvParty').value, ref:$('mvRef').value, note:$('mvNote').value, staff:S.staff };
+  const it = itemBy(code), raw = $('mvQty').value, q = Number(raw);
+  if(raw==='' || !(q>=0) || Math.floor(q)!==q || (S.moveMode!=='adj' && q<=0)){ errorPop('ກະລຸນາໃສ່ຈຳນວນເປັນຈຳນວນເຕັມ'+(S.moveMode==='adj'?'':' ທີ່ຫຼາຍກວ່າ 0')); return; }
+  const after = S.moveMode==='in' ? it.balance+q : S.moveMode==='out' ? it.balance-q : q;
+  if(after < 0){ errorPop('ຈຳນວນບໍ່ພໍ: '+it.name+' ເຫຼືອພຽງ '+it.balance+' '+it.unit); return; }
+  const M = { in:['ຢືນຢັນເຕີມເຄື່ອງ','+'+nf(q),'b-ok','ບັນທຶກເຕີມເຄື່ອງ','ແຫຼ່ງທີ່ມາ'], out:['ຢືນຢັນຕັດເຄື່ອງອອກ','-'+nf(q),'b-bad','ບັນທຶກຕັດອອກ','ຜູ້ຮັບ'], adj:['ຢືນຢັນປັບຍອດ',(q-it.balance>0?'+':'')+nf(q-it.balance),'b-pri','ບັນທຶກປັບຍອດ',''] }[S.moveMode];
+  const clr = after<=0 ? 'var(--bad)' : after<=it.min ? 'var(--warn)' : 'var(--ok)';
+  const det = [['ລາຍການ', esc(it.name)], ['ຈຳນວນ', M[1]+' '+esc(it.unit)], ['ຄົງເຫຼືອ', nf(it.balance)+' → <span style="color:'+clr+'">'+nf(after)+'</span>']];
+  if(M[4] && base.party) det.push([M[4], esc(base.party)]);
+  if(!(await popup({type:'confirm', title:M[0], msg:'ກວດສອບຂໍ້ມູນກ່ອນບັນທຶກ', details:det, ok:M[3], cancel:'ກັບໄປແກ້ໄຂ', okClass:M[2]}))) return;
+  let r;
+  if(S.moveMode==='in') r = await call('stockIn', Object.assign(base, {qty:$('mvQty').value}));
+  else if(S.moveMode==='out') r = await call('stockOut', Object.assign(base, {qty:$('mvQty').value}));
+  else r = await call('adjustStock', Object.assign(base, {actual:$('mvQty').value}));
+  $('mvQty').value=''; $('mvRef').value=''; $('mvNote').value=''; $('mvParty').value='';
+  await refresh(); loadMoveToday();
+  const now = itemBy(code) || it;
+  successPop('ບັນທຶກສຳເລັດ', esc(r.message) + (now.level!=='ok' && S.moveMode!=='in' ? '<br><span style="color:var(--warn)">⚠️ ລາຍການນີ້ເຫຼືອໜ້ອຍແລ້ວ ຄວນເຕີມ</span>' : ''));
+}
+async function loadMoveToday(){
+  $('moveToday').innerHTML = '<div class="empty">ກຳລັງໂຫຼດ...</div>';
+  try{
+    const r = await api('getHistory', {from:S.cfg.today, to:S.cfg.today});
+    const rows = r.rows.filter(x => x.type!=='ແຈກຊໍາລ້ວຍ' && x.type!=='ຍົກເລີກການແຈກ');
+    $('moveToday').innerHTML = rows.length ? '<div class="tbl-wrap"><table><tbody>'+rows.map(x =>
+      '<tr><td>'+typePill(x.type)+'<div class="small muted">'+esc(x.date.slice(11))+'</div></td><td>'+esc(x.name)+'<div class="small muted">'+esc(x.party||x.note)+' · '+esc(x.staff)+'</div></td><td class="num"><b>'+signed(x)+'</b><div class="small muted">ເຫຼືອ '+nf(x.after)+'</div></td></tr>').join('')+'</tbody></table></div>'
+      : '<div class="empty">ມື້ນີ້ຍັງບໍ່ມີການເຕີມ/ຕັດອອກ</div>';
+  }catch(e){ $('moveToday').innerHTML = '<div class="empty">'+esc(e)+'</div>'; }
+}
+
+/* ================= GIFT ================= */
+function fmtAmt(el){
+  const pos = el.value.length - el.selectionStart;
+  let v = el.value.replace(/[^\d.]/g,''); const parts = v.split('.');
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  el.value = parts.length>1 ? parts[0]+'.'+parts.slice(1).join('').slice(0,2) : parts[0];
+  try{ el.setSelectionRange(el.value.length-pos, el.value.length-pos); }catch(e){}
+}
+function giftItems(){ return S.items.filter(i => i.category===S.cfg.giftCategory && i.status==='ໃຊ້ງານ'); }
+function minBlocked(it){
+  if(!(it.giftMin>0)) return false;
+  const cur = $('gCur').value; if(!S.cfg.fxCurrencies.includes(cur)) return false;
+  return rawNum($('gAmt').value) < it.giftMin;
+}
+function renderTiles(){
+  if(!S.cfg) return;
+  const list = giftItems().slice().sort((a,b) => (b.balance>0) - (a.balance>0));
+  $('giftTiles').innerHTML = list.length ? list.map(i => {
+    const q = S.cart[i.code] || 0; const blocked = minBlocked(i); const dis = i.balance<=0 || blocked;
+    return '<div class="tile '+(q?'sel ':'')+(dis&&!q?'dis':'')+'"><b>'+esc(i.name)+'</b>'+(i.type?'<div class="meta">'+esc(i.type)+'</div>':'')+'<div class="meta">ເຫຼືອ '+nf(i.balance)+' '+esc(i.unit)+
+      (i.giftMin>0 ? ' · ຂັ້ນຕ່ຳ '+nf(i.giftMin)+' ກີບ' : '')+'</div>'+(blocked?'<div class="small" style="color:var(--bad)">ເງິນຝາກບໍ່ຮອດເງື່ອນໄຂ</div>':'')+
+      '<div class="stepper"><button onclick="cartAdd(\''+i.code+'\',-1)">−</button><input type="number" min="0" value="'+q+'" onchange="cartSet(\''+i.code+'\',this.value)"><button onclick="cartAdd(\''+i.code+'\',1)" '+(dis?'disabled':'')+'>＋</button></div></div>';
+  }).join('') : '<div class="empty">ບໍ່ມີເຄື່ອງຊໍາລ້ວຍໃນລະບົບ</div>';
+  renderCart();
+}
+function cartAdd(code, d){ cartSet(code, (S.cart[code]||0) + d); }
+function cartSet(code, v){
+  const it = itemBy(code); v = Math.max(0, Math.floor(Number(v)||0));
+  if(v > it.balance){ toast(it.name+' ເຫຼືອພຽງ '+it.balance+' '+it.unit, 'err'); v = it.balance; }
+  if(v>0 && minBlocked(it)){ toast('ເງິນຝາກບໍ່ຮອດເງື່ອນໄຂຂອງ '+it.name, 'err'); v = 0; }
+  if(v) S.cart[code] = v; else delete S.cart[code];
+  renderTiles();
+}
+function renderCart(){
+  const keys = Object.keys(S.cart);
+  $('cartSum').innerHTML = keys.length ? '<div class="okbox"><b>ເຄື່ອງທີ່ຈະແຈກ:</b> '+keys.map(k => { const i=itemBy(k); return esc(i.name)+' × '+S.cart[k]+' '+esc(i.unit); }).join(', ')+'</div>' : '<div class="muted small">ຍັງບໍ່ໄດ້ເລືອກເຄື່ອງ</div>';
+}
+let accTimer;
+function accTyping(){ $('accInfo').innerHTML=''; S.accHistory=null; clearTimeout(accTimer); accTimer = setTimeout(lookupAccount, 900); }
+async function lookupAccount(){
+  const acc = $('gAcc').value.replace(/[\s\-.]/g,'');
+  if(acc.length < S.cfg.accountDigits[0]) return;
+  try{
+    const r = await api('checkAccount', acc);
+    S.accHistory = r.history;
+    if(r.history.length){
+      const last = r.history[r.history.length-1];
+      $('accInfo').innerHTML = '<div class="warnbox">⚠️ ບັນຊີນີ້ເຄີຍຮັບເຄື່ອງຊໍາລ້ວຍແລ້ວ <b>'+r.history.length+' ຄັ້ງ</b> — ຄັ້ງລ່າສຸດ '+esc(last.date)+' ('+esc(last.receipt)+'): '+
+        last.items.map(i => esc(i.name)+' ×'+i.qty).join(', ')+'</div>';
+      if(!$('gName').value) $('gName').value = r.lastName || '';
+      if(!S.gType && last.accountType){ const l=[...$('gType').querySelectorAll('label')].find(x => x.querySelector('input').value===last.accountType); if(l) l.click(); }
+    } else {
+      $('accInfo').innerHTML = '<div class="okbox">✅ ບັນຊີນີ້ຍັງບໍ່ເຄີຍຮັບເຄື່ອງຊໍາລ້ວຍ</div>';
+    }
+  }catch(e){}
+}
+function giftPayload(force){
+  return {
+    customer:{ name:$('gName').value.trim(), account:$('gAcc').value.replace(/[\s\-.]/g,''), accountType:S.gType, currency:$('gCur').value, amount:rawNum($('gAmt').value), phone:$('gPhone').value.trim() },
+    items: Object.keys(S.cart).map(k => ({code:k, qty:S.cart[k]})), note:$('gNote').value.trim(), staff:S.staff, force:!!force
+  };
+}
+function validateGift(p){
+  const c = p.customer, dg = S.cfg.accountDigits;
+  if(!/^\d+$/.test(c.account) || c.account.length<dg[0] || c.account.length>dg[1]) return 'ເລກບັນຊີຕ້ອງເປັນຕົວເລກ '+dg[0]+'-'+dg[1]+' ໂຕ';
+  if(!c.name) return 'ກະລຸນາໃສ່ຊື່ບັນຊີ';
+  if(!c.accountType) return 'ກະລຸນາເລືອກປະເພດບັນຊີ';
+  if(!(c.amount>0)) return 'ກະລຸນາໃສ່ຈຳນວນເງິນ';
+  if(!p.items.length) return 'ກະລຸນາເລືອກເຄື່ອງຊໍາລ້ວຍ';
+  return '';
+}
+function reviewGift(){
+  if(!needStaff()) return;
+  const p = giftPayload(false); const err = validateGift(p);
+  if(err){ toast(err,'err'); return; }
+  const c = p.customer;
+  openModal('ຢືນຢັນການແຈກເຄື່ອງຊໍາລ້ວຍ',
+    '<div class="rcpt"><div class="kv"><div>ຊື່ບັນຊີ</div><div><b>'+esc(c.name)+'</b></div><div>ເລກບັນຊີ</div><div class="mono"><b>'+esc(c.account)+'</b></div><div>ປະເພດບັນຊີ</div><div>'+esc(c.accountType)+'</div><div>ຈຳນວນເງິນ</div><div>'+nfd(c.amount)+' '+esc(c.currency)+'</div>'+(c.phone?'<div>ເບີໂທ</div><div>'+esc(c.phone)+'</div>':'')+'</div>'+
+    '<div class="tbl-wrap"><table><thead><tr><th>ເຄື່ອງຊໍາລ້ວຍ</th><th class="num">ຈຳນວນ</th></tr></thead><tbody>'+
+    p.items.map(x => { const i=itemBy(x.code); return '<tr><td>'+esc(i.name)+'</td><td class="num">'+x.qty+' '+esc(i.unit)+'</td></tr>'; }).join('')+'</tbody></table></div></div>'+
+    (S.accHistory && S.accHistory.length ? '<div class="warnbox" style="margin-top:12px">⚠️ ບັນຊີນີ້ເຄີຍຮັບມາແລ້ວ '+S.accHistory.length+' ຄັ້ງ</div>' : ''),
+    '<button class="btn b-gh" onclick="closeModal()">ແກ້ໄຂ</button><button class="btn b-gift" onclick="submitGift(false)">✔ ຢືນຢັນແຈກ</button>');
+}
+async function submitGift(force){
+  const p = giftPayload(force);
+  const r = await call('distributeGift', p);
+  if(r.needConfirm){
+    openModal('ບັນຊີນີ້ເຄີຍຮັບເຄື່ອງແລ້ວ',
+      '<div class="warnbox">ເລກບັນຊີ <b>'+esc(p.customer.account)+'</b> ເຄີຍຮັບເຄື່ອງຊໍາລ້ວຍ '+r.history.length+' ຄັ້ງ:</div>'+
+      '<div class="tbl-wrap"><table><thead><tr><th>ໃບຮັບ</th><th>ວັນທີ</th><th>ເຄື່ອງ</th><th>ຜູ້ແຈກ</th></tr></thead><tbody>'+
+      r.history.map(h => '<tr><td class="mono">'+esc(h.receipt)+'</td><td>'+esc(h.date)+'</td><td>'+h.items.map(i => esc(i.name)+' ×'+i.qty).join('<br>')+'</td><td>'+esc(h.staff)+'</td></tr>').join('')+
+      '</tbody></table></div><p class="sub" style="margin-top:10px">ຕ້ອງການແຈກຕື່ມອີກບໍ່? (ຕ້ອງໄດ້ຮັບອະນຸມັດຕາມລະບຽບ)</p>',
+      '<button class="btn b-gh" onclick="closeModal()">ບໍ່ແຈກ</button><button class="btn b-gift" onclick="submitGift(true)">ແຈກຕື່ມ</button>', true);
+    return;
+  }
+  closeModal();
+  resetGift(); await refresh(); loadGiftToday();
+  showReceipt(r.receipt, true);
+}
+function resetGift(){
+  ['gAcc','gName','gAmt','gPhone','gNote'].forEach(id => $(id).value='');
+  S.cart = {}; S.gType=''; S.accHistory=null; $('accInfo').innerHTML='';
+  $('gType').querySelectorAll('label').forEach(x => x.classList.remove('on'));
+  $('gType').querySelectorAll('input').forEach(x => x.checked=false);
+  renderTiles();
+}
+function receiptHtml(r){
+  return '<div class="rcpt"><div class="rh"><b>ທະນາຄານພັດທະນາລາວ ຈຳກັດ</b>ໜ່ວຍບໍລິການ ເມືອງຄອບ</div><h4>ໃບຮັບເຄື່ອງຊໍາລ້ວຍ'+(r.status==='ຍົກເລີກ'?' (ຍົກເລີກ)':'')+'</h4>'+
+    '<div class="kv"><div>ເລກໃບຮັບ</div><div class="mono"><b>'+esc(r.receipt)+'</b></div><div>ວັນທີ</div><div>'+esc(r.date)+'</div>'+
+    '<div>ຊື່ບັນຊີ</div><div><b>'+esc(r.name)+'</b></div><div>ເລກບັນຊີ</div><div class="mono">'+esc(r.account)+'</div>'+
+    '<div>ປະເພດບັນຊີ</div><div>'+esc(r.accountType)+'</div><div>ຈຳນວນເງິນ</div><div>'+nfd(r.amount)+' '+esc(r.currency)+'</div>'+
+    (r.phone?'<div>ເບີໂທ</div><div>'+esc(r.phone)+'</div>':'')+(r.note?'<div>ໝາຍເຫດ</div><div>'+esc(r.note)+'</div>':'')+'</div>'+
+    '<table><thead><tr><th class="c" style="width:44px">ລ/ດ</th><th>ລາຍການເຄື່ອງຊໍາລ້ວຍ</th><th class="num">ຈຳນວນ</th></tr></thead><tbody>'+
+    r.items.map((i,k) => '<tr><td class="c">'+(k+1)+'</td><td>'+esc(i.name)+'</td><td class="num">'+i.qty+' '+esc(i.unit)+'</td></tr>').join('')+'</tbody></table>'+
+    '<div class="signs"><div></div><div></div></div><div class="signs" style="margin-top:0;grid-template-columns:1fr 1fr"><span>ລູກຄ້າຜູ້ຮັບ<br>'+esc(r.name)+'</span><span>ພະນັກງານຜູ້ແຈກ<br>'+esc(r.staff)+'</span></div></div>';
+}
+function showReceipt(r, fresh){
+  S.printHtml = receiptHtml(r);
+  const banner = fresh ? '<div class="rcpt-ok">'+ICONS.success+'<div>ແຈກເຄື່ອງຊໍາລ້ວຍສຳເລັດ<div class="small" style="font-weight:400">ບັນທຶກໃນ GIFT_LOG ແລະ ຕັດສະຕັອກແລ້ວ — ພິມໃບຮັບໃຫ້ລູກຄ້າລົງລາຍເຊັນ</div></div></div>' : '';
+  openModal('ໃບຮັບເຄື່ອງຊໍາລ້ວຍ', banner + S.printHtml, '<button class="btn b-gh" onclick="closeModal()">ປິດ</button><button class="btn b-pri" onclick="printNow(S.printHtml)">🖨️ ພິມໃບຮັບ</button>');
+}
+async function openReceipt(no){ const r = await call('getReceipt', no); showReceipt(r); }
+async function loadGiftToday(){
+  $('giftToday').innerHTML = '<div class="empty">ກຳລັງໂຫຼດ...</div>';
+  try{
+    const r = await api('getGiftReport', {from:S.cfg.today, to:S.cfg.today});
+    $('giftToday').innerHTML = r.receipts.length ? giftTable(r.receipts, true) : '<div class="empty">ມື້ນີ້ຍັງບໍ່ມີການແຈກ</div>';
+  }catch(e){ $('giftToday').innerHTML = '<div class="empty">'+esc(e)+'</div>'; }
+}
+function giftTable(list, actions){
+  return '<div class="tbl-wrap"><table><thead><tr><th>ໃບຮັບ</th><th>ວັນທີ</th><th>ຊື່ບັນຊີ</th><th>ເລກບັນຊີ</th><th>ປະເພດ</th><th class="num">ຈຳນວນເງິນ</th><th>ເຄື່ອງທີ່ຮັບ</th><th>ຜູ້ແຈກ</th><th class="c">ສະຖານະ</th>'+(actions?'<th></th>':'')+'</tr></thead><tbody>'+
+    list.map(r => '<tr><td class="mono">'+esc(r.receipt)+'</td><td class="small">'+esc(r.date)+'</td><td>'+esc(r.name)+(r.phone?'<div class="small muted">'+esc(r.phone)+'</div>':'')+'</td><td class="mono">'+esc(r.account)+'</td><td class="small">'+esc(r.accountType)+
+      '</td><td class="num">'+nfd(r.amount)+' <span class="small muted">'+esc(r.currency)+'</span></td><td class="small">'+r.items.map(i => esc(i.name)+' ×'+i.qty).join('<br>')+'</td><td class="small">'+esc(r.staff)+'</td><td class="c">'+
+      (r.status==='ຍົກເລີກ' ? '<span class="pill p-cancel" title="'+esc(r.cancelReason)+'">ຍົກເລີກ</span>' : '<span class="pill p-ok">ແຈກແລ້ວ</span>')+'</td>'+
+      (actions ? '<td style="white-space:nowrap"><button class="btn b-gh b-sm" onclick="openReceipt(\''+esc(r.receipt)+'\')">🖨️</button> '+(r.status!=='ຍົກເລີກ'?'<button class="btn b-gh b-sm" onclick="askCancel(\''+esc(r.receipt)+'\')">✖</button>':'')+'</td>' : '')+'</tr>').join('')+
+    '</tbody></table></div>';
+}
+function askCancel(no){
+  if(!needStaff()) return;
+  openModal('ຍົກເລີກໃບຮັບ '+no, '<div class="warnbox">ເຄື່ອງໃນໃບຮັບນີ້ຈະຖືກຄືນເຂົ້າສາງ ແລະ ບັນທຶກໃນ LOG</div><label class="f"><span>ເຫດຜົນການຍົກເລີກ <i>*</i></span><textarea id="cReason"></textarea></label>',
+    '<button class="btn b-gh" onclick="closeModal()">ປິດ</button><button class="btn b-bad" onclick="doCancel(\''+esc(no)+'\')">ຢືນຢັນຍົກເລີກ</button>');
+}
+async function doCancel(no){
+  const r = await call('cancelGift', {receipt:no, reason:$('cReason').value, staff:S.staff});
+  closeModal(); await refresh(); loadGiftToday();
+  successPop('ຍົກເລີກໃບຮັບແລ້ວ', esc(r.message));
+  if(S.repMode==='gift' && $('v-report').classList.contains('on')) runRep();
+}
+
+/* ================= REPORTS ================= */
+function monthStart(){ return S.cfg.today.slice(0,8)+'01'; }
+function setRep(r){
+  S.repMode = r;
+  $('repSeg').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.r===r));
+  const cats = '<option value="">ທຸກໝວດ</option>'+S.cfg.categories.map(c => '<option>'+esc(c)+'</option>').join('');
+  const dates = '<label class="f"><span>ຈາກວັນທີ</span><input type="date" id="rFrom" value="'+monthStart()+'"></label><label class="f"><span>ຫາວັນທີ</span><input type="date" id="rTo" value="'+S.cfg.today+'"></label>';
+  const btns = '<div class="row"><button class="btn b-pri" onclick="runRep()">🔍 ສະແດງ</button><button class="btn b-gh" onclick="printRep()">🖨️ ພິມ</button><button class="btn b-gh" onclick="csvRep()">⬇️ CSV</button></div>';
+  let f = '';
+  if(r==='low') f = '<div class="grid g3"><label class="f"><span>ໝວດ</span><select id="rCat">'+cats+'</select></label></div>'+btns;
+  if(r==='hist') f = '<div class="grid g4">'+dates+'<label class="f"><span>ປະເພດ</span><select id="rType"><option value="">ທັງໝົດ</option><option>ເຂົ້າ</option><option>ອອກ</option><option>ແຈກຊໍາລ້ວຍ</option><option>ປັບຍອດ</option><option>ຍົກເລີກການແຈກ</option></select></label><label class="f"><span>ໝວດ</span><select id="rCat">'+cats+'</select></label></div><label class="f"><span>ຄົ້ນຫາ</span><input type="text" id="rQ" placeholder="ຊື່ເຄື່ອງ, ຜູ້ຮັບ, ເລກເອກະສານ..."></label>'+btns;
+  if(r==='gift') f = '<div class="grid g4">'+dates+'<label class="f"><span>ປະເພດບັນຊີ</span><select id="rAcc"><option value="">ທັງໝົດ</option>'+S.cfg.accountTypes.map(t => '<option>'+esc(t)+'</option>').join('')+'</select></label><label class="f"><span>ສະຖານະ</span><select id="rSt"><option value="">ທັງໝົດ</option><option>ແຈກແລ້ວ</option><option>ຍົກເລີກ</option></select></label></div><label class="f"><span>ຄົ້ນຫາ</span><input type="text" id="rQ" placeholder="ຊື່ບັນຊີ, ເລກບັນຊີ, ເລກໃບຮັບ..."></label>'+btns;
+  if(r==='sum') f = '<div class="grid g3">'+dates+'<label class="f"><span>ໝວດ</span><select id="rCat">'+cats+'</select></label></div>'+btns;
+  $('repFilter').innerHTML = f;
+  runRep();
+}
+const val = id => $(id) ? $(id).value : '';
+async function runRep(){
+  const out = $('repOut'); out.innerHTML = '<div class="card empty">ກຳລັງໂຫຼດ...</div>';
+  const r = S.repMode;
+  try{
+    if(r==='low'){
+      let rows = await call('getLowStock'); if(val('rCat')) rows = rows.filter(x => x.category===val('rCat'));
+      S.lastRep = { title:'ລາຍງານເຄື່ອງເຫຼືອນ້ອຍ / ໝົດສາງ', head:['ລະຫັດ','ໝວດ','ຊື່ລາຍການ','ຄົງເຫຼືອ','ຂັ້ນຕ່ຳ','ຫົວໜ່ວຍ','ສະຖານະ','ແນະນຳເຕີມ'],
+        rows: rows.map(x => [x.code,x.category,x.name,x.balance,x.min,x.unit,x.level==='out'?'ໝົດ':'ໃກ້ໝົດ',x.suggest]) };
+      out.innerHTML = '<div class="card"><div class="row" style="margin-bottom:10px"><span class="pill p-out">ໝົດ '+rows.filter(x=>x.level==='out').length+'</span><span class="pill p-low">ໃກ້ໝົດ '+rows.filter(x=>x.level==='low').length+'</span></div>'+
+        (rows.length ? '<div class="tbl-wrap"><table><thead><tr><th>ລະຫັດ</th><th>ຊື່ລາຍການ</th><th>ໝວດ</th><th class="num">ຄົງເຫຼືອ</th><th class="num">ຂັ້ນຕ່ຳ</th><th class="num">ແນະນຳເຕີມ</th><th class="c">ສະຖານະ</th><th></th></tr></thead><tbody>'+
+        rows.map(x => '<tr><td class="mono">'+esc(x.code)+'</td><td>'+esc(x.name)+'</td><td class="small">'+esc(x.category)+'</td><td class="num"><b>'+nf(x.balance)+'</b> '+esc(x.unit)+'</td><td class="num">'+nf(x.min)+'</td><td class="num">'+nf(x.suggest)+'</td><td class="c">'+levelPill(x)+'</td><td><button class="btn b-gh b-sm" onclick="quickIn(\''+esc(x.code)+'\')">⬇️ ເຕີມ</button></td></tr>').join('')+'</tbody></table></div>'
+        : '<div class="empty">✅ ບໍ່ມີເຄື່ອງທີ່ເຫຼືອນ້ອຍ</div>')+'<p class="small muted" style="margin-top:10px">* ແນະນຳເຕີມ = ໃຫ້ຮອດ 2 ເທົ່າຂອງຂັ້ນຕ່ຳ · ປັບຂັ້ນຕ່ຳໄດ້ທີ່ໜ້າ ລາຍການ</p></div>';
+    }
+    if(r==='hist'){
+      const d = await call('getHistory', {from:val('rFrom'), to:val('rTo'), type:val('rType'), category:val('rCat'), q:val('rQ')});
+      S.lastRep = { title:'ປະຫວັດເຂົ້າ-ອອກ '+val('rFrom')+' ຫາ '+val('rTo'), head:['ເລກທີ','ວັນທີ','ປະເພດ','ລະຫັດ','ຊື່ລາຍການ','ຈຳນວນ','ຍອດກ່ອນ','ຍອດຫຼັງ','ແຫຼ່ງ/ຜູ້ຮັບ','ເອກະສານ','ຜູ້ບັນທຶກ','ໝາຍເຫດ'],
+        rows: d.rows.map(x => [x.id,x.date,x.type,x.code,x.name,signed(x),x.before,x.after,x.party,x.ref,x.staff,x.note]) };
+      const sums = Object.keys(d.sumByType).map(k => typePill(k)+' '+nf(d.sumByType[k])).join(' &nbsp; ');
+      out.innerHTML = '<div class="card"><div class="row" style="margin-bottom:10px"><b>'+nf(d.total)+' ລາຍການ</b><span class="small">'+sums+'</span></div>'+
+        (d.rows.length ? '<div class="tbl-wrap"><table><thead><tr><th>ວັນທີ</th><th>ປະເພດ</th><th>ລາຍການ</th><th class="num">ຈຳນວນ</th><th class="num">ກ່ອນ→ຫຼັງ</th><th>ແຫຼ່ງ / ຜູ້ຮັບ</th><th>ເອກະສານ</th><th>ຜູ້ບັນທຶກ</th><th>ໝາຍເຫດ</th></tr></thead><tbody>'+
+        d.rows.map(x => '<tr><td class="small">'+esc(x.date)+'<div class="muted mono">'+esc(x.id)+'</div></td><td>'+typePill(x.type)+'</td><td>'+esc(x.name)+'<div class="small muted">'+esc(x.code)+'</div></td><td class="num"><b>'+signed(x)+'</b></td><td class="num small">'+nf(x.before)+' → '+nf(x.after)+'</td><td class="small">'+esc(x.party)+'</td><td class="small">'+esc(x.ref)+'</td><td class="small">'+esc(x.staff)+'</td><td class="small">'+esc(x.note)+'</td></tr>').join('')+'</tbody></table></div>'
+        : '<div class="empty">ບໍ່ມີຂໍ້ມູນໃນໄລຍະນີ້</div>')+'</div>';
+    }
+    if(r==='gift'){
+      const d = await call('getGiftReport', {from:val('rFrom'), to:val('rTo'), accountType:val('rAcc'), status:val('rSt'), q:val('rQ')});
+      const rows = [];
+      d.receipts.forEach(x => x.items.forEach(i => rows.push([x.receipt,x.date,x.name,"'"+x.account,x.accountType,x.currency,x.amount,x.phone,i.code,i.name,i.qty,i.unit,x.staff,x.status,x.note,x.cancelReason])));
+      S.lastRep = { title:'ລາຍງານແຈກເຄື່ອງຊໍາລ້ວຍ '+val('rFrom')+' ຫາ '+val('rTo'), head:['ໃບຮັບ','ວັນທີ','ຊື່ບັນຊີ','ເລກບັນຊີ','ປະເພດບັນຊີ','ສະກຸນ','ຈຳນວນເງິນ','ເບີໂທ','ລະຫັດເຄື່ອງ','ເຄື່ອງຊໍາລ້ວຍ','ຈຳນວນ','ຫົວໜ່ວຍ','ຜູ້ແຈກ','ສະຖານະ','ໝາຍເຫດ','ເຫດຜົນຍົກເລີກ'], rows,
+        printHtml: null };
+      const cur = Object.keys(d.byCurrency).map(k => nfd(d.byCurrency[k])+' '+k).join(' · ') || '-';
+      const summary =
+        '<div class="grid g4" style="margin-bottom:14px"><div class="stat gift"><div class="l">ລູກຄ້າທີ່ຮັບ</div><div class="v">'+nf(d.totalReceipts)+'</div><div class="s">ໃບຮັບ (ບໍ່ລວມຍົກເລີກ)</div></div>'+
+        '<div class="stat blue"><div class="l">ເຄື່ອງທີ່ແຈກ</div><div class="v">'+nf(d.totalPcs)+'</div><div class="s">ຊິ້ນ</div></div>'+
+        '<div class="stat"><div class="l">ຍອດເງິນຝາກລວມ</div><div class="v" style="font-size:17px">'+esc(cur)+'</div></div>'+
+        '<div class="stat"><div class="l">ຍົກເລີກ</div><div class="v">'+nf(d.cancelled)+'</div><div class="s">ໃບຮັບ</div></div></div>'+
+        '<div class="grid g2"><div class="card"><h3>ຕາມປະເພດບັນຊີ</h3><div class="tbl-wrap"><table><thead><tr><th>ປະເພດບັນຊີ</th><th class="num">ລູກຄ້າ</th><th class="num">ຊິ້ນ</th></tr></thead><tbody>'+
+        d.byType.map(t => '<tr><td>'+esc(t.accountType)+'</td><td class="num">'+nf(t.customers)+'</td><td class="num">'+nf(t.pcs)+'</td></tr>').join('')+'</tbody></table></div></div>'+
+        '<div class="card"><h3>ຕາມລາຍການເຄື່ອງ</h3><div class="tbl-wrap"><table><thead><tr><th>ເຄື່ອງຊໍາລ້ວຍ</th><th class="num">ຈຳນວນ</th><th class="num">ລູກຄ້າ</th></tr></thead><tbody>'+
+        (d.byItem.length ? d.byItem.map(t => '<tr><td>'+esc(t.name)+'</td><td class="num">'+nf(t.qty)+' '+esc(t.unit)+'</td><td class="num">'+nf(t.customers)+'</td></tr>').join('') : '<tr><td colspan="3" class="empty">-</td></tr>')+'</tbody></table></div></div></div>';
+      S.lastRep.summaryHtml = summary;
+      out.innerHTML = summary + '<div class="card"><h3>ລາຍລະອຽດໃບຮັບ</h3>'+(d.receipts.length ? giftTable(d.receipts, true) : '<div class="empty">ບໍ່ມີຂໍ້ມູນ</div>')+'</div>';
+    }
+    if(r==='sum'){
+      const rows = await call('getMovementSummary', {from:val('rFrom'), to:val('rTo'), category:val('rCat')});
+      S.lastRep = { title:'ສະຫຼຸບເຄື່ອນໄຫວສະຕັອກ '+val('rFrom')+' ຫາ '+val('rTo'), head:['ລະຫັດ','ໝວດ','ຊື່ລາຍການ','ຫົວໜ່ວຍ','ຍອດຕົ້ນງວດ','ເຂົ້າ','ອອກ','ຍອດທ້າຍງວດ'],
+        rows: rows.map(x => [x.code,x.category,x.name,x.unit,x.begin,x.inQty,x.outQty,x.end]) };
+      let html = '', cat = '';
+      rows.forEach(x => {
+        if(x.category!==cat){ cat = x.category; html += '<tr class="grp"><td colspan="6">'+esc(cat)+'</td></tr>'; }
+        html += '<tr><td class="mono">'+esc(x.code)+'</td><td>'+esc(x.name)+' <span class="small muted">('+esc(x.unit)+')</span></td><td class="num">'+nf(x.begin)+'</td><td class="num" style="color:var(--ok)">'+(x.inQty?'+'+nf(x.inQty):'-')+'</td><td class="num" style="color:var(--bad)">'+(x.outQty?'-'+nf(x.outQty):'-')+'</td><td class="num"><b>'+nf(x.end)+'</b></td></tr>';
+      });
+      out.innerHTML = '<div class="card"><div class="tbl-wrap"><table><thead><tr><th>ລະຫັດ</th><th>ຊື່ລາຍການ</th><th class="num">ຕົ້ນງວດ</th><th class="num">ເຂົ້າ</th><th class="num">ອອກ</th><th class="num">ທ້າຍງວດ</th></tr></thead><tbody>'+(html||'<tr><td colspan="6" class="empty">-</td></tr>')+'</tbody></table></div></div>';
+    }
+  }catch(e){ out.innerHTML = '<div class="card empty">'+esc(e)+'</div>'; }
+}
+function quickIn(code){
+  show('move'); setMoveMode('in'); $('mvCat').value=''; fillMoveItems(); $('mvItem').value = code; showMoveItem(); $('mvQty').focus();
+}
+function printRep(){
+  const R = S.lastRep; if(!R){ toast('ກະລຸນາກົດ ສະແດງ ກ່ອນ','err'); return; }
+  const html = '<div class="rcpt"><div class="rh"><b>ທະນາຄານພັດທະນາລາວ ຈຳກັດ</b>ໜ່ວຍບໍລິການ ເມືອງຄອບ</div><h4>'+esc(R.title)+'</h4><p class="small" style="text-align:right">ພິມວັນທີ '+esc(new Date().toLocaleString('en-GB'))+' · ໂດຍ '+esc(S.staff)+'</p>'+
+    (R.summaryHtml||'')+'<table><thead><tr><th>ລ/ດ</th>'+R.head.map(h => '<th>'+esc(h)+'</th>').join('')+'</tr></thead><tbody>'+
+    R.rows.map((r,i) => '<tr><td>'+(i+1)+'</td>'+r.map(c => '<td>'+esc(String(c).replace(/^'/,''))+'</td>').join('')+'</tr>').join('')+'</tbody></table>'+
+    '<div class="signs"><div></div><div></div></div><div class="signs" style="margin-top:0"><span>ຜູ້ສະຫຼຸບ</span><span>ຫົວໜ້າໜ່ວຍບໍລິການ</span></div></div>';
+  printNow(html);
+}
+function csvRep(){
+  const R = S.lastRep; if(!R){ toast('ກະລຸນາກົດ ສະແດງ ກ່ອນ','err'); return; }
+  const q = v => '"'+String(v==null?'':v).replace(/"/g,'""')+'"';
+  const csv = '\uFEFF' + [R.head].concat(R.rows).map(r => r.map(q).join(',')).join('\r\n');
+  try{
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8'}));
+    a.download = R.title.replace(/[\\/:*?"<>|]/g,'_') + '.csv';
+    document.body.appendChild(a); a.click(); a.remove();
+  }catch(e){ toast('ດາວໂຫຼດບໍ່ໄດ້ໃນບຣາວເຊີນີ້ — ໃຊ້ ພິມ ແທນ','err'); }
+}
+function printNow(html){
+  $('printArea').innerHTML = html;
+  setTimeout(() => window.print(), 150);
+}
+
+init();
+</script>
+</body>
+</html>
